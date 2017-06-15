@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Delta-Epsilon Limits</title>
+    <script src="https://sagecell.sagemath.org/static/jquery.min.js"></script>
+    <script src="https://sagecell.sagemath.org/embedded_sagecell.js"></script>
+    <script>
+$(function () {
+    // Make *any* div with class 'compute' a Sage cell
+    sagecell.makeSagecell({inputLocation: 'div.compute',
+    						template:       sagecell.templates.minimal,
+                           evalButtonText: 'Launch the Interactive Applet Now'});
+});
+    </script>
+  </head>
+  <body style="width: 1000px;">
+
+  <h1>Delta-Epsilon Limits</h1>
+
+<p>An Interactive Applet powered by Sage and MathJax.</p>
+<p>(By Kelsey Norman with HTML code from Prof. Gregory V. Bard)</p>
+
+<hr>
+
+<div class="compute">
+<script type="text/x-sage">
+
+@interact( layout =[ ['func'], ['eval', 'delta'], ['x_min', 'x_max'] ])
+def limits( func = input_box( default = x^2 - 1, label = "function", width = 20), 
+        eval = input_box( default = 1, label = "x coordinate", width = 5), 
+        delta = slider( 0, 1, 0.01, default = 0.5, label = "delta"), 
+        x_min = input_box( default = -4, label = "x min", width = 5), 
+        x_max = input_box( default = 4, label = "x max", width = 5) ):
+    # Set parameters
+    f = func.function(x)
+    a = eval - delta
+    b = eval + delta
+    
+    # Since f isn't strictly increasing or decreasing, need to find the max & min to determine epsilon
+    (max, prec1) = find_local_maximum( f, a, b )
+    (min, prec2) = find_local_minimum( f, a, b )
+
+    # Graph the function and the evaluation point
+    graph_f = plot( f, x_min, x_max, color = "green" )
+    pt_eval = point( (eval, f(eval)), color = "purple", size = 20 )
+
+    # Color the segment of line under consideration
+    region = plot( f, a, b, color = "purple", thickness = 2 )
+
+    # Determine which dist. is bigger, f(eval) to max or min. Set the bigger one to epsilon
+    if abs(max - f(eval)) >= abs(min - f(eval)):
+        epsilon = abs(max - f(eval))
+        y_big = max
+        y_small = min
+    else:
+        epsilon = abs(f(eval) - min)
+        y_big = min
+        y_small = max
+    
+    if abs(b) >= abs(a):
+        x_big = b
+        x_small = a
+    else:
+        x_big = a
+        x_small = b
+    
+    # Draw on delta region
+    x_region = plot( 0, a, b, color = "red", thickness = 2 )
+    if (y_big >= 0) and (y_small >= 0):
+        x_dashed = line([ (a, 0), (a, y_big )], linestyle = '--', color = "red") + line([ (b, 0), (b, y_big)], linestyle = '--', color = "red")
+    elif (y_big <= 0) and (y_small <= 0):
+        x_dashed = line([ (a, 0), (a, y_big)], linestyle = '--', color = "red") + line([ (b, 0), (b, y_big)], linestyle = '--', color = "red")
+    else:
+        x_dashed = line([ (a, -y_big), (a, y_big )], linestyle = '--', color = "red") + line([ (b, -y_big), (b, y_big)], linestyle = '--', color = "red")
+    
+    # Draw on epsilon region
+    y_region = line([ (0, f(eval) - epsilon), (0, f(eval) + epsilon)], color = "blue", thickness = 2)
+    if (x_big >= 0) and (x_small >= 0):
+        y_dashed = line([ (0, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (0, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
+    elif (x_big <= 0) and (x_small <= 0):
+        y_dashed = line([ (0, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (0, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
+    else:
+         y_dashed = line([ (-x_big, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (-x_big, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
+
+    # Combine graphs and show
+    graph = graph_f + pt_eval + region + x_region + x_dashed + y_region + y_dashed
+    graph.show()
+    
+</script>
+</div>
+
+<hr>
+Last modified on June 15th, 2017.
+</body>
+</html>
