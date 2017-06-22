@@ -24,74 +24,85 @@ $(function () {
 
 <hr>
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="jquery.jslatex.js"></script>
+
+<script>
+$(function () {
+    $(".latex").latex();
+});
+</script>
+
+<div class="latex">
+    \textrm{This demo produces a visual for the } \delta - \epsilon \textrm{ definition of a limit: }
+    \\
+    \textrm{Let } c \textrm{ be a limit point of } D \textrm{ and let } L \textrm{ be a real number. }
+    \\
+    \textrm{We say that } lim_{x \rightarrow c} f(x) = L
+    \textrm{ if for every } \epsilon \textgreater 0 \textrm{ there exists a } \delta 
+    \\
+    \textrm{ such that, for all } 
+        x \in D, \textrm{ if } 0 \textless |x-c| \textless \delta, \textrm{then } |f(x) - L| < \epsilon
+</div>
+
+<hr>
+
 <div class="compute">
 <script type="text/x-sage">
 
-@interact( layout =[ ['func'], ['eval', 'delta'], ['x_min', 'x_max'] ])
-def limits( func = input_box( default = x^2 - 1, label = "function", width = 20), 
-        eval = input_box( default = 1, label = "x coordinate", width = 5), 
-        delta = slider( 0, 1, 0.01, default = 0.5, label = "delta"), 
-        x_min = input_box( default = -4, label = "x min", width = 5), 
-        x_max = input_box( default = 4, label = "x max", width = 5) ):
-    # Set parameters
+@interact( layout =[ ['func', 'a'], ['L', 'epsilon'], ['x_min', 'x_max'], ['y_min', 'y_max'] ])
+def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20), 
+        a = input_box( default = 1, label = "a", width = 5), 
+        L = input_box( default = 1, label = "L", width = 5), 
+        epsilon = slider(0, 1, default = 0.5, step_size = 0.01), 
+        x_min = input_box( default = -1, label = "x min", width = 5), 
+        x_max = input_box( default = 4, label = "x max", width = 5), 
+        y_min = input_box( default = -5, label = "y min", width = 5), 
+        y_max = input_box( default = 15, label = "y max", width = 5) ):
+    
+    # Set basics, to be adjusted when this becomes better
     f = func.function(x)
-    a = eval - delta
-    b = eval + delta
     
-    # Since f isn't strictly increasing or decreasing, need to find the max & min to determine epsilon
-    (max, prec1) = find_local_maximum( f, a, b )
-    (min, prec2) = find_local_minimum( f, a, b )
-
-    # Graph the function and the evaluation point
-    graph_f = plot( f, x_min, x_max, color = "green" )
-    pt_eval = point( (eval, f(eval)), color = "purple", size = 20 )
-
-    # Color the segment of line under consideration
-    region = plot( f, a, b, color = "purple", thickness = 2 )
-
-    # Determine which dist. is bigger, f(eval) to max or min. Set the bigger one to epsilon
-    if abs(max - f(eval)) >= abs(min - f(eval)):
-        epsilon = abs(max - f(eval))
-        y_big = max
-        y_small = min
-    else:
-        epsilon = abs(f(eval) - min)
-        y_big = min
-        y_small = max
+    # Set epsilon region
+    lower_y = L - epsilon
+    upper_y = L + epsilon
     
-    if abs(b) >= abs(a):
-        x_big = b
-        x_small = a
-    else:
-        x_big = a
-        x_small = b
+    # Find options for delta
+    lower_x = find_root( f - lower_y, x_min, x_max )
+    upper_x = find_root( f - upper_y, x_min, x_max )
     
-    # Draw on delta region
-    x_region = plot( 0, a, b, color = "red", thickness = 2 )
-    if (y_big >= 0) and (y_small >= 0):
-        x_dashed = line([ (a, 0), (a, y_big )], linestyle = '--', color = "red") + line([ (b, 0), (b, y_big)], linestyle = '--', color = "red")
-    elif (y_big <= 0) and (y_small <= 0):
-        x_dashed = line([ (a, 0), (a, y_big)], linestyle = '--', color = "red") + line([ (b, 0), (b, y_big)], linestyle = '--', color = "red")
+    # Set delta based on which is smaller
+    if abs(lower_x - a) <= abs(upper_x - a):
+        delta = abs(lower_x - a)
     else:
-        x_dashed = line([ (a, -y_big), (a, y_big )], linestyle = '--', color = "red") + line([ (b, -y_big), (b, y_big)], linestyle = '--', color = "red")
+        delta = abs(upper_x - a)
+        
+    # Reset these to regions that coordinate with delta
+    lower_x = a - delta
+    upper_x = a + delta
+        
+    graph_f = plot( f, x_min, x_max, ymin = y_min, ymax = y_max, color = 'green' )
+    height1 = plot( lower_y, x_min, x_max, linestyle = '--' )
+    height2 = plot( upper_y, x_min, x_max, linestyle = '--', fill = lower_y, fillcolor = '#ccccff' )
+    width_fill = polygon([ (lower_x, y_min), (lower_x, y_max), (upper_x, y_max), (upper_x, y_min)],
+        color = '#ffcccc', alpha = 0.3, aspect_ratio = 'automatic' )
+    width1 = line( [(lower_x, y_min), (lower_x, y_max)], linestyle = '--', color = 'red' )
+    width2 = line( [(upper_x, y_min), (upper_x, y_max)], linestyle = '--', color = 'red' )
+    a_marker = point( (a, 0), size = 20, color = 'red')
     
-    # Draw on epsilon region
-    y_region = line([ (0, f(eval) - epsilon), (0, f(eval) + epsilon)], color = "blue", thickness = 2)
-    if (x_big >= 0) and (x_small >= 0):
-        y_dashed = line([ (0, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (0, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
-    elif (x_big <= 0) and (x_small <= 0):
-        y_dashed = line([ (0, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (0, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
+    if lower_y <= f(a) and f(a) <= upper_y:
+        print "These choices work, so try making epsilon smaller to see if your choice of L is correct."
     else:
-         y_dashed = line([ (-x_big, f(eval) - epsilon), (x_big, f(eval) - epsilon)], linestyle = '--', color = "blue") + line([ (-x_big, f(eval) + epsilon), (x_big, f(eval) + epsilon)], linestyle = '--', color = "blue")
-
-    # Combine graphs and show
-    graph = graph_f + pt_eval + region + x_region + x_dashed + y_region + y_dashed
+        print "This combination of choices shows L is not the limit."
+    
+    graph = graph_f + height1 + height2 + width_fill + width1 + width2 + a_marker
     graph.show()
     
 </script>
 </div>
 
 <hr>
-Last modified on June 15th, 2017.
+Last modified on June 21st, 2017.
 </body>
 </html>
+
