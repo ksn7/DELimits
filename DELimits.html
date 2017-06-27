@@ -50,11 +50,12 @@ $(function () {
 <div class="compute">
 <script type="text/x-sage">
 
-@interact( layout =[ ['func', 'a'], ['L', 'epsilon'], ['x_min', 'x_max'], ['y_min', 'y_max'] ])
+@interact( layout =[ ['func', 'a', 'L'], ['delta', 'epsilon'], ['x_min', 'x_max', 'y_min', 'y_max'] ])
 def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20), 
         a = input_box( default = 1, label = "a", width = 5), 
-        L = input_box( default = 1, label = "L", width = 5), 
-        epsilon = slider(0, 1, default = 0.5, step_size = 0.01), 
+        L = input_box( default = 0, label = "L", width = 5), 
+        delta = slider(0, 1, default = 0.4, step_size = 0.01),
+        epsilon = slider(0, 1, default = 1, step_size = 0.01), 
         x_min = input_box( default = -1, label = "x min", width = 5), 
         x_max = input_box( default = 4, label = "x max", width = 5), 
         y_min = input_box( default = -5, label = "y min", width = 5), 
@@ -66,21 +67,12 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
     # Set epsilon region
     lower_y = L - epsilon
     upper_y = L + epsilon
-    
-    # Find options for delta
-    lower_x = find_root( f - lower_y, x_min, x_max )
-    upper_x = find_root( f - upper_y, x_min, x_max )
-    
-    # Set delta based on which is smaller
-    if abs(lower_x - a) <= abs(upper_x - a):
-        delta = abs(lower_x - a)
-    else:
-        delta = abs(upper_x - a)
         
     # Reset these to regions that coordinate with delta
     lower_x = a - delta
     upper_x = a + delta
-        
+    
+    # Graph everything: function, delta region, epsilon region    
     graph_f = plot( f, x_min, x_max, ymin = y_min, ymax = y_max, color = 'green' )
     height1 = plot( lower_y, x_min, x_max, linestyle = '--' )
     height2 = plot( upper_y, x_min, x_max, linestyle = '--', fill = lower_y, fillcolor = '#ccccff' )
@@ -90,11 +82,18 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
     width2 = line( [(upper_x, y_min), (upper_x, y_max)], linestyle = '--', color = 'red' )
     a_marker = point( (a, 0), size = 20, color = 'red')
     
-    if lower_y <= f(a) and f(a) <= upper_y:
-        print "These choices work, so try making epsilon smaller to see if your choice of L is correct."
+    # Check if the delta and epsilon regions line up
+    (min_height, prec) = find_local_minimum( f, lower_x, upper_x )
+    (max_height, prec) = find_local_maximum( f, lower_x, upper_x )
+    if lower_y <= min_height and min_height <= upper_y:
+        if lower_y <= max_height and max_height <= upper_y:
+            print "This combination of delta and epsilon work!"
+        else:
+            print "The outputs from this delta region do not lie in this epsilon region. Try making delta smaller, epsilon bigger, or changing a and L."
     else:
-        print "This combination of choices shows L is not the limit."
+        print "The outputs from this delta region do not lie in this epsilon region. Try making delta smaller, epsilon bigger, or changing a and L."
     
+    # Combine everything to one graph and show it
     graph = graph_f + height1 + height2 + width_fill + width1 + width2 + a_marker
     graph.show()
     
@@ -102,7 +101,7 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 21st, 2017.
+Last modified on June 26th, 2017.
 </body>
 </html>
 
