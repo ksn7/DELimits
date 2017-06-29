@@ -84,14 +84,22 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
     
     # Check if the delta and epsilon regions line up
     (min_height, prec) = find_local_minimum( f, lower_x, upper_x )
-    (max_height, prec) = find_local_maximum( f, lower_x, upper_x )
-    if lower_y <= min_height and min_height <= upper_y:
-        if lower_y <= max_height and max_height <= upper_y:
-            print "This combination of delta and epsilon work!"
-        else:
-            print "The outputs from this delta region do not lie in this epsilon region. Try making delta smaller, epsilon bigger, or changing a and L."
-    else:
-        print "The outputs from this delta region do not lie in this epsilon region. Try making delta smaller, epsilon bigger, or changing a and L."
+    (max_height, prec) = find_local_maximum( f, lower_x, upper_x )        
+    try:
+        lim = f.limit(x=a)
+        if lim == L:
+            if lower_y <= min_height and min_height <= upper_y:
+                if lower_y <= max_height and max_height <= upper_y:
+                    print "This combination of delta, epsilon, and L work!" 
+                else: 
+                    print "Try making delta smaller for this epsilon."
+            else:
+                print "Try making delta smaller for this epsilon."
+        else: 
+            print "Your choice of L is not correct!"
+    except:
+        print "The limit of f does not exist at a." 
+        
     
     # Combine everything to one graph and show it
     graph = graph_f + height1 + height2 + width_fill + width1 + width2 + a_marker
@@ -101,7 +109,7 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 26th, 2017.
+Last modified on June 29th, 2017.
 </body>
 </html>
 
