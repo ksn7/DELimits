@@ -34,15 +34,15 @@ $(function () {
 </script>
 
 <div class="latex">
-    \textrm{This demo produces a visual for the } \delta - \epsilon \textrm{ definition of a limit: }
+    \textrm{Definition of a limit: Let } f \textrm{ be a function defined at all points}
     \\
-    \textrm{Let } c \textrm{ be a limit point of } D \textrm{ and let } L \textrm{ be a real number. }
+    \textrm{ of an open interval } I \textrm{ containing } c \textrm{ except perhaps at } c \textrm{ itself. }
     \\
-    \textrm{We say that } lim_{x \rightarrow c} f(x) = L
-    \textrm{ if for every } \epsilon \textgreater 0 \textrm{ there exists a } \delta 
+    \textrm{We say } lim_{x \rightarrow c} f(x) = L \textrm{ for some real number } L 
     \\
-    \textrm{ such that, for all } 
-        x \in D, \textrm{ if } 0 \textless |x-c| \textless \delta, \textrm{then } |f(x) - L| < \epsilon
+    \textrm{ if for every } \epsilon > 0 \textrm{ there exists a } \delta > 0 \textrm{ such that } |f(x) - L| < \epsilon 
+    \\
+    \textrm{ whenever } x \textrm{ is in } I \textrm{ and satisfies } 0 < |x-c| < \delta.
 </div>
 
 <hr>
@@ -92,9 +92,9 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
                 if lower_y <= max_height and max_height <= upper_y:
                     print "This combination of delta, epsilon, and L work!" 
                 else: 
-                    print "Try making delta smaller for this epsilon."
+                    print "The values of f(x) corresponding to this delta region (red band) do not lie completely inside the epsilon region (blue band). Try making delta smaller for this epsilon."
             else:
-                print "Try making delta smaller for this epsilon."
+                print "The values of f(x) corresponding to this delta region (red band) do not lie completely inside the epsilon region (blue band). Try making delta smaller for this epsilon."
         else: 
             print "Your choice of L is not correct!"
     except:
@@ -112,4 +112,3 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
 Last modified on June 29th, 2017.
 </body>
 </html>
-
