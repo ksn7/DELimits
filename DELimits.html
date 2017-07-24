@@ -90,15 +90,15 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
         if lim == L:
             if lower_y <= min_height and min_height <= upper_y:
                 if lower_y <= max_height and max_height <= upper_y:
-                    print "This combination of delta, epsilon, and L work!" 
+                    pretty_print( "This combination of delta, epsilon, and L work!" )
                 else: 
-                    print "The values of f(x) corresponding to this delta region (red band) do not lie completely inside the epsilon region (blue band). Try making delta smaller for this epsilon."
+                    pretty_print( "The values of f(x) corresponding to this delta region (red band) do not lie completely \ninside the epsilon region (blue band). Try making delta smaller for this epsilon." )
             else:
-                print "The values of f(x) corresponding to this delta region (red band) do not lie completely inside the epsilon region (blue band). Try making delta smaller for this epsilon."
+                pretty_print( "The values of f(x) corresponding to this delta region (red band) do not lie completely \ninside the epsilon region (blue band). Try making delta smaller for this epsilon." )
         else: 
-            print "Your choice of L is not correct!"
+            pretty_print( "Your choice of L is not correct!" )
     except:
-        print "The limit of f does not exist at a." 
+        pretty_print( "The limit of f does not exist at a." )
         
     
     # Combine everything to one graph and show it
@@ -109,6 +109,6 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on June 29th, 2017.
+Last modified on July 24th, 2017.
 </body>
 </html>
