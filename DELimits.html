@@ -38,7 +38,7 @@ $(function () {
     \\
     \textrm{ of an open interval } I \textrm{ containing } c \textrm{ except perhaps at } c \textrm{ itself. }
     \\
-    \textrm{We say } lim_{x \rightarrow c} f(x) = L \textrm{ for some real number } L 
+    \textrm{We say } \lim_{x \rightarrow c} f(x) = L \textrm{ for some real number } L 
     \\
     \textrm{ if for every } \epsilon > 0 \textrm{ there exists a } \delta > 0 \textrm{ such that } |f(x) - L| < \epsilon 
     \\
@@ -54,8 +54,8 @@ $(function () {
 def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20), 
         a = input_box( default = 1, label = "a", width = 5), 
         L = input_box( default = 0, label = "L", width = 5), 
-        delta = slider(0, 1, default = 0.4, step_size = 0.01),
-        epsilon = slider(0, 1, default = 1, step_size = 0.01), 
+        delta = slider(0, 1, default = 0.4, label = "$\\delta$", step_size = 0.01),
+        epsilon = slider(0, 1, default = 1, label = "$\\epsilon$", step_size = 0.01), 
         x_min = input_box( default = -1, label = "x min", width = 5), 
         x_max = input_box( default = 4, label = "x max", width = 5), 
         y_min = input_box( default = -5, label = "y min", width = 5), 
@@ -80,7 +80,7 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
         color = '#ffcccc', alpha = 0.3, aspect_ratio = 'automatic' )
     width1 = line( [(lower_x, y_min), (lower_x, y_max)], linestyle = '--', color = 'red' )
     width2 = line( [(upper_x, y_min), (upper_x, y_max)], linestyle = '--', color = 'red' )
-    a_marker = point( (a, 0), size = 20, color = 'red')
+#    a_marker = point( (a, 0), size = 20, color = 'red')
     
     # Check if the delta and epsilon regions line up
     (min_height, prec) = find_local_minimum( f, lower_x, upper_x )
@@ -102,13 +102,13 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
         
     
     # Combine everything to one graph and show it
-    graph = graph_f + height1 + height2 + width_fill + width1 + width2 + a_marker
+    graph = graph_f + height1 + height2 + width_fill + width1 + width2
     graph.show()
     
 </script>
 </div>
 
 <hr>
-Last modified on July 24th, 2017.
+Last modified on July 28th, 2017.
 </body>
 </html>
