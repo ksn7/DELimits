@@ -50,16 +50,16 @@ $(function () {
 <div class="compute">
 <script type="text/x-sage">
 
-@interact( layout =[ ['func', 'a', 'L'], ['delta', 'epsilon'], ['x_min', 'x_max', 'y_min', 'y_max'] ])
-def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20), 
-        a = input_box( default = 1, label = "a", width = 5), 
-        L = input_box( default = 0, label = "L", width = 5), 
-        delta = slider(0, 1, default = 0.4, label = "$\\delta$", step_size = 0.01),
-        epsilon = slider(0, 1, default = 1, label = "$\\epsilon$", step_size = 0.01), 
-        x_min = input_box( default = -1, label = "x min", width = 5), 
-        x_max = input_box( default = 4, label = "x max", width = 5), 
-        y_min = input_box( default = -5, label = "y min", width = 5), 
-        y_max = input_box( default = 15, label = "y max", width = 5) ):
+@interact( layout =[ ['func', 'a', 'L'], ['delta', 'epsilon'], ['x_min', 'x_max', 'y_min', 'y_max'], ['sample'] ])
+def limits( func = input_box( default = x^2-1, label = "$f(x) = $", width = 20), 
+        a = input_box( default = 1, label = "$a$", width = 5), 
+        L = input_box( default = 0, label = "$L$", width = 5), 
+        delta = slider( map( lambda x:x.n(digits = 2), srange(0, 1, .01)), default = 0.4 ),
+        epsilon = slider( map( lambda x:x.n(digits = 2), srange(0, 1, .01)), default = 1),
+        x_min = input_box( default = -1, label = "$x_{min}$", width = 5), 
+        x_max = input_box( default = 4, label = "$x_{max}$", width = 5), 
+        y_min = input_box( default = -5, label = "$y_{min}$", width = 5), 
+        y_max = input_box( default = 15, label = "$y_{max}$", width = 5) ):
     
     # Set basics, to be adjusted when this becomes better
     f = func.function(x)
@@ -109,6 +109,6 @@ def limits( func = input_box( default = x^2-1, label = "f(x) = ", width = 20),
 </div>
 
 <hr>
-Last modified on July 28th, 2017.
+Last modified on August 16th, 2017.
 </body>
 </html>
